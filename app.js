@@ -1,4 +1,5 @@
 let lastTimestamp = null;
+// testing
 
 async function fetchEvents() {
     let url = "/events";

@@ -1,5 +1,31 @@
 let lastTimestamp = null;
 
+function formatTimestamp(isoString) {
+    const date = new Date(isoString);
+
+    const day = date.getUTCDate();
+    const month = date.toLocaleString("en-US", { month: "long", timeZone: "UTC" });
+    const year = date.getUTCFullYear();
+
+    let hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes().toString().padStart(2, "0");
+
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12 || 12;
+
+    return `${ordinal(day)} ${month} ${year} - ${hours}:${minutes} ${ampm} UTC`;
+}
+
+function ordinal(n) {
+    if (n > 3 && n < 21) return `${n}th`;
+    switch (n % 10) {
+        case 1: return `${n}st`;
+        case 2: return `${n}nd`;
+        case 3: return `${n}rd`;
+        default: return `${n}th`;
+    }
+}
+
 
 async function fetchEvents() {
     let url = "/events";
@@ -27,15 +53,32 @@ function renderEvent(event){
     container.appendChild(div);
 }
 
-function formatEvent(event){
-    if(event.action === "PUSH"){
-        return `${event.author} pushed to ${event.to_branch} on ${event.timestamp}`;
+// function formatEvent(event){
+//     if(event.action === "PUSH"){
+//         return `${event.author} pushed to ${event.to_branch} on ${event.timestamp}`;
+//     }
+//     if(event.action === "PULL_REQUEST"){
+//         return `${event.author} submitted a pull request from ${event.from_branch} to ${event.to_branch} on ${event.timestamp}`;
+//     }
+//     if(event.action === "MERGE"){
+//         return `${event.author} merged branch ${event.from_branch} to ${event.to_branch} on ${event.timestamp}`;
+//     }
+
+//     return "";
+// }
+function formatEvent(event) {
+    const time = formatTimestamp(event.timestamp);
+
+    if (event.action === "PUSH") {
+        return `${event.author} pushed to ${event.to_branch} on ${time}`;
     }
-    if(event.action === "PULL_REQUEST"){
-        return `${event.author} submitted a pull request from ${event.from_branch} to ${event.to_branch} on ${event.timestamp}`;
+
+    if (event.action === "PULL_REQUEST") {
+        return `${event.author} submitted a pull request from ${event.from_branch} to ${event.to_branch} on ${time}`;
     }
-    if(event.action === "MERGE"){
-        return `${event.author} merged branch ${event.from_branch} to ${event.to_branch} on ${event.timestamp}`;
+
+    if (event.action === "MERGE") {
+        return `${event.author} merged branch ${event.from_branch} to ${event.to_branch} on ${time}`;
     }
 
     return "";

@@ -12,7 +12,9 @@ events = db["events"]
 
 #Indexes
 #Preventing duplicate webhook events
-events.create_index([("request_id", ASCENDING)], unique=True)
+# events.create_index([("request_id", ASCENDING)], unique=True)
+# In db.py, find the unique index line and change it to:
+events.create_index([("request_id", ASCENDING), ("action", ASCENDING)], unique=True)
 
 #Optimize timebased queries
 events.create_index([("timestamp", ASCENDING)])

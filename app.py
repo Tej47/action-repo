@@ -34,7 +34,7 @@ def github_webhook():
 
 @app.route("/events", methods=["GET"])
 def fetch_events():
-    print("GET /events called")
+    # print("GET /events called")
     since = request.args.get("since")
     query={}
     if since:

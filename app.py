@@ -1,9 +1,10 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 from datetime import datetime
 from db import events
 from handlers.push import handle_push
 from handlers.pull_request import handle_pull_request
+#push2 testing
 
 app = Flask(__name__)
 CORS(app)
@@ -51,6 +52,9 @@ def fetch_events():
 #what is $gt
 #query, {"_id":0})
 
+@app.route("/")
+def home():
+    return render_template("index.html")
 
 
 

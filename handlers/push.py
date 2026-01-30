@@ -4,7 +4,19 @@ from datetime import datetime
 # import uuid
 
 def handle_push(payload):
-    commit_hash = payload["head_commit"]["id"]
+    head_commit = payload.get("head_commit")
+
+    # Safety check
+    if not head_commit:
+        return jsonify({"ignored": True}), 200
+
+    commit_message = head_commit.get("message", "")
+    
+    # 🚫 Ignore merge-generated pushes
+    if commit_message.startswith("Merge pull request"):
+        return jsonify({"ignored": "merge push"}), 200
+    
+    commit_hash = head_commit["id"]
 
     data = {
         "request_id": commit_hash,

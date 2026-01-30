@@ -40,7 +40,7 @@ def fetch_events():
     if since:
         try:
             query["timestamp"]={
-                "$gt": since
+                "$gte": since
             }
         except Exception:
             return jsonify({"error": "invalid timestamp"}), 400
